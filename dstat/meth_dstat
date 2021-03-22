@@ -1,0 +1,76 @@
+##########################################################################
+#######################      R          ##################################
+##########################################################################
+library(ChAMP)
+library(ENmix)
+library(preprocessCore)
+
+# Let's get started!
+# Import the IDAT data files into ChAMP
+myImport = champ.import(directory="path to folder containing IDAT files", arraytype="EPIC")
+
+# filtering data from SNPs, Multi Hit probes, Sex chromosomes, etc
+myLoad= champ.filter(arraytype="EPIC", ProbeCutoff=3, detP=0.01)
+
+# data pre-processing using ENmix
+beta = mpreprocess(myLoad$rgSet,nCores=6)
+
+#   BMIQ normalisation
+myNorm=champ.norm(beta=beta,rgSet=myLoad$rgSet,mset=myLoad$mset,resultsDir=".CHAMP_Normalization/",method="BMIQ",
+	plotBMIQ=FALSE,arraytype="EPIC",cores=TRUE)
+
+# Batch effect correction by ComBat
+combatch= champ.runCombat(beta=myNorm, pd=myLoad$pd, variablename="Array", batchname=c("Batch"), logitTrans=TRUE)
+myCombat = champ.runCombat(beta=myNorm,pd=myLoad$pd,batchname=c("Batch"))
+champ.SVD(combatch,pd=myLoad$pd)
+
+# Quantile_Normalisation
+bqb = normalize.quantiles(combatch)
+colname=colnames(combatch)
+colnames(bqb)=colname
+rowname=rownames(combatch)
+rownames(bqb)=rowname
+
+# Cell type Adjustment  
+celltypenorm = champ.refbase(beta=bqb, arraytype="EPIC")
+corrected_beta = celltypenorm$CorrectedBeta
+cell_fraction = celltypenorm$CellFraction
+
+
+##########################################################################
+#######################       Python          ############################
+##########################################################################
+
+import sys, csv, random, math, statistics
+import numpy as np
+infile = csv.reader(open(sys.argv[1],'r'), delimiter = ',')
+outfile = csv.writer(open(sys.argv[2],'w'), delimiter = ',')
+
+
+header = next(infile)
+outheader = ['IlmnID','tb_varmean','ptb_varmean', 'stdev', 'stat','Q99','flag']
+outfile.writerow(outheader)
+
+for row in infile:
+	cpg = row[0]
+	beta = [float(x) for x in row[1:]]
+	data = np.reshape(beta,(-1,4))
+	var_all = np.var(data, axis=1)
+	tb_varmean = np.mean(var_all[0::2])
+	tbsd = statistics.stdev(var_all[0::2])
+	ptb_varmean = np.mean(var_all[1::2])
+	ptbsd = statistics.stdev(var_all[1::2])
+	sdp = math.sqrt(((len(var_all[0::2])-1)*(tbsd**2)+(len(var_all[1::2])-1)*(ptbsd**2))/(len(var_all[0::2])-1+len(var_all[1::2])-1))
+	stat = (ptb_varmean - tb_varmean)/sdp
+	dist = []
+	for i in range(0,1000):
+		shuf_var = random.sample(list(var_all),len(var_all))
+		stb_varmean = np.mean(shuf_var[0::2])
+		sptb_varmean = np.mean(shuf_var[1::2])
+		sdpn = math.sqrt(((len(shuf_var[0::2])-1)*(tbsd**2)+(len(shuf_var[1::2])-1)*(ptbsd**2))/(len(shuf_var[0::2])-1+len(shuf_var[1::2])-1))
+		dist.append((sptb_varmean - stb_varmean)/sdpn)
+	q99 = np.quantile(dist,0.99)
+	flag = 'No'
+	if stat > q99 : 
+		flag = 'Yes'
+	outfile.writerow([cpg,tb_varmean,ptb_varmean,sdp,stat,q99,flag])
