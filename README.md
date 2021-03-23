@@ -16,7 +16,7 @@ For reading the IDAT files and necessary preprocessing and filtering, you would 
 * [ENmix](https://www.bioconductor.org/packages/release/bioc/vignettes/ENmix/inst/doc/ENmix.pdf)
 * [preprocessCore](https://bioconductor.riken.jp/packages/3.8/bioc/manuals/preprocessCore/man/preprocessCore.pdf)
 
-The raw IDAT files for Infinium MethylationEPIC BeadChip (Illumina) and processed data is available in (insert GEO accession number).
+The raw IDAT files for Infinium MethylationEPIC BeadChip (Illumina) and processed data is available in [GEO Submission GSE169338](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE169338).
 
 1. Load required packages on R
 
