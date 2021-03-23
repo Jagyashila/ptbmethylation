@@ -4,6 +4,8 @@
 library(ChAMP)
 library(ENmix)
 library(preprocessCore)
+library(tibble)
+library(dplyr)
 
 # Let's get started!
 # Import the IDAT data files into ChAMP
@@ -36,6 +38,12 @@ celltypenorm = champ.refbase(beta=bqb, arraytype="EPIC")
 corrected_beta = celltypenorm$CorrectedBeta
 cell_fraction = celltypenorm$CellFraction
 
+# Our aim is to select CpG IDs residing on the TSS200, TSS1500, and 5'UTRs, which was obtained from hg19 annotation, You can use any relevant annotation for the selection of region of your choice 
+
+# From that matrix, we want to filter out all probes which has beta value less than 0.2 at all timepoints
+#Conversely, we aim to filter out the probes which has mean beta value greater 0.2 at atleast one time point
+#This way we want to remove unmethylated probes
+filt = your_matrix_with_selected_geneomic_region %>% filter_if(is.numeric, any_vars(.>0.2))
 
 ##########################################################################
 #######################       Python          ############################

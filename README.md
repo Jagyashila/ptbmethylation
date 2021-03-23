@@ -15,6 +15,8 @@ For reading the IDAT files and necessary preprocessing and filtering, you would 
 * [ChAMP](https://www.bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html)
 * [ENmix](https://www.bioconductor.org/packages/release/bioc/vignettes/ENmix/inst/doc/ENmix.pdf)
 * [preprocessCore](https://bioconductor.riken.jp/packages/3.8/bioc/manuals/preprocessCore/man/preprocessCore.pdf)
+* [dplyr](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html)
+* [tibble](https://cran.r-project.org/web/packages/tibble/tibble.pdf)
 
 The raw IDAT files for Infinium MethylationEPIC BeadChip (Illumina) and processed data is available in [GEO Submission GSE169338](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE169338).
 
@@ -29,6 +31,8 @@ The raw IDAT files for Infinium MethylationEPIC BeadChip (Illumina) and processe
 8. Load the normalised data matrix for cell type normalisation, in case using a heterogeneous tissue sample for methylation analysis.
 
 We used Illumina Infinium EPIC manifest file in which annotation is based on hg19 reference sequence. We considered probes in promoter specific regions of the genome, i.e. from 200 to 1500 bases upstream of transcription start sites and 5’ untranslated regions (TSS200, TSS1500, 5’UTR) for analysis.
+
+And we want to remove the CpG sites with low beta values (intensity values), i.e. any value ≤0.2 in all samples at all time points. We then proceeded with the beta matrix for subsequent analysis.
 
 ## Python
 
