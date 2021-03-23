@@ -5,16 +5,16 @@ This repository contains initial source codes to reproduce the temporal maternal
 
 ## Table of Contents
 
-* R
-* Python
+* [R](https://www.r-project.org/)
+* [Python](https://www.pitt.edu/~naraehan/python2/)
 
 ## R
 
 For reading the IDAT files and necessary preprocessing and filtering, you would require the following packages in R:
 
-* ChAMP [](https://www.bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html)
-* ENmix [](https://www.bioconductor.org/packages/release/bioc/vignettes/ENmix/inst/doc/ENmix.pdf)
-* preprocessCore [](https://bioconductor.riken.jp/packages/3.8/bioc/manuals/preprocessCore/man/preprocessCore.pdf)
+* [ChAMP](https://www.bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html)
+* [ENmix](https://www.bioconductor.org/packages/release/bioc/vignettes/ENmix/inst/doc/ENmix.pdf)
+* [preprocessCore](https://bioconductor.riken.jp/packages/3.8/bioc/manuals/preprocessCore/man/preprocessCore.pdf)
 
 The raw IDAT files for Infinium MethylationEPIC BeadChip (Illumina) and processed data is available in (insert GEO accession number).
 
